@@ -1,6 +1,6 @@
 package com.github.hotelclean.core;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class Validator {
 
@@ -11,6 +11,13 @@ public class Validator {
         return object;
     }
 
+    public static String notBlank(String text) {
+        if (notNull(text).isBlank()) {
+            throw new InvalidDomainObjectError("Argument must not be blank");
+        }
+        return text;
+    }
+
     public static Integer strictlyPositive(Integer number) {
         if (number < 0) {
             throw new InvalidDomainObjectError("Argument must not be negative");
@@ -18,7 +25,7 @@ public class Validator {
         return number;
     }
 
-    public static <T> Set<T> notEmpty(Set<T> items) {
+    public static <T> Collection<T> notEmpty(Collection<T> items) {
         if (items == null || items.isEmpty()) {
             throw new InvalidDomainObjectError("Argument must not be null or empty");
         }

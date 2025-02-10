@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Value;
 
 /**
- * Unique room number of a hotel room. This number will be used
+ * Room number of a hotel room. This number will be used
  * as the identifier for each room in our application.
  */
 @Value
@@ -27,5 +27,9 @@ public class RoomNumber {
 
     public int asInteger() {
         return number;
+    }
+
+    public String asString() {
+        return String.valueOf(number);
     }
 }

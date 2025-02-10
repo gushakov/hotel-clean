@@ -20,7 +20,7 @@ public enum BedSize {
     final int persons;
 
     BedSize(String size, int persons) {
-        this.size = Validator.notNull(size);
+        this.size = Validator.notBlank(size);
         this.persons = Validator.strictlyPositive(persons);
     }
 }

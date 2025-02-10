@@ -1,4 +1,5 @@
-package com.github.hotelclean.core.model.accommodation;
+package com.github.hotelclean.core.model.registration;
+
 
 import com.github.hotelclean.core.Validator;
 import lombok.AccessLevel;
@@ -6,25 +7,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
 
-/**
- * ID of a room type (unique within our hotel).
- */
 @Value
-public class RoomTypeId {
+public class RegistrationId {
 
     @Getter(AccessLevel.NONE)
     String id;
 
-    public static RoomTypeId of(String id) {
-        return new RoomTypeId(id);
+    public static RegistrationId of(final String id) {
+        return new RegistrationId(id);
     }
 
     @Builder
-    public RoomTypeId(String id) {
+    public RegistrationId(String id) {
         this.id = Validator.notBlank(id);
     }
 
-    public String asString(){
+    public String asString() {
         return id;
     }
 }

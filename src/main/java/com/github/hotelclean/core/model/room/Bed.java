@@ -17,6 +17,6 @@ public class Bed {
 
     public Bed(BedSize size, String manufacturer) {
         this.size = Validator.notNull(size);
-        this.manufacturer = Validator.notNull(manufacturer);
+        this.manufacturer = Validator.notBlank(manufacturer);
     }
 }

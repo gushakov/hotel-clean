@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -24,13 +26,22 @@ public class Room {
     RoomNumber roomNumber;
 
     /**
-     * Beds this room is furnished with.
+     * Beds this room is furnished with. This a simple collection,
+     * since we can have duplicates: i.e.: two double beds, etc.
      */
-    Set<Bed> beds;
+    Collection<Bed> beds;
+
+    /**
+     * Indicates whether this room is available for guests.
+     */
+    boolean availableForGuests;
 
     @Builder
-    public Room(RoomNumber roomNumber, Set<Bed> beds) {
+    public Room(RoomNumber roomNumber, Set<Bed> beds, Boolean availableForGuests) {
         this.roomNumber = Validator.notNull(roomNumber);
+        // room is available by default
+        this.availableForGuests = Optional.ofNullable(availableForGuests).orElse(true);
         this.beds = Validator.notEmpty(beds);
+
     }
 }

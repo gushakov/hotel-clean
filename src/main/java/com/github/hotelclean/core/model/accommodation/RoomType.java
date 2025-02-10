@@ -7,6 +7,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+import java.util.Collection;
+
 /**
  * Aggregate root. Describes a type or a category of rooms available
  * at the hotel.
@@ -22,11 +25,52 @@ public class RoomType {
      */
     RoomTypeId id;
 
+    /**
+     * Short name of this room type: i.e. "Double Deluxe with Ocean View"
+     */
     String name;
 
+    /**
+     * Collection of bedding types available for this room type. This
+     * is a simple collection since we may have duplicates: i.e. two
+     * queen beds.
+     */
+    Collection<BeddingType> beddingTypes;
+
+    /**
+     * Maximum number of persons which can be accommodated by this
+     * room type.
+     */
+    Occupancy occupancy;
+
+    /**
+     * Accommodation class associated with this room type.
+     */
+    AccommodationClass accommodationClass;
+
+    /**
+     * Base price for a night for this room type.
+     */
+    BigDecimal basePricePerNight;
+
+    /**
+     * Any other amenities included in this room type, i.e.: any view,
+     * balcony, etc.
+     */
+    String amenities;
+
+
     @Builder
-    public RoomType(RoomTypeId id, String name) {
+    public RoomType(RoomTypeId id, String name, Collection<BeddingType> beddingTypes, Occupancy occupancy,
+                    AccommodationClass accommodationClass, BigDecimal basePricePerNight, String amenities) {
         this.id = Validator.notNull(id);
-        this.name = Validator.notNull(name);
+        this.name = Validator.notBlank(name);
+        this.beddingTypes = Validator.notEmpty(beddingTypes);
+        this.occupancy = Validator.notNull(occupancy);
+        this.accommodationClass = Validator.notNull(accommodationClass);
+        this.basePricePerNight = Validator.notNull(basePricePerNight);
+
+        // can be null
+        this.amenities = amenities;
     }
 }
