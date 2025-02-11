@@ -52,6 +52,17 @@ public class Room {
         this.occupied = Optional.ofNullable(occupied).orElse(false);
     }
 
+    /**
+     * Marks this room as occupied.
+     *
+     * @return a copy of this room with {@code occupied} set to {@code true}
+     */
+    public Room occupy() {
+        return newRoom()
+                .occupied(true)
+                .build();
+    }
+
     private RoomBuilder newRoom() {
         return Room.builder()
                 .roomNumber(roomNumber)

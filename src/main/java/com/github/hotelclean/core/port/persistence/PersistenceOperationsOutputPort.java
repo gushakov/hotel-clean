@@ -5,8 +5,8 @@ import com.github.hotelclean.core.model.accommodation.RoomTypeId;
 import com.github.hotelclean.core.model.registration.Registration;
 import com.github.hotelclean.core.model.registration.RegistrationId;
 import com.github.hotelclean.core.model.room.Room;
+import com.github.hotelclean.core.model.room.RoomNumber;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 public interface PersistenceOperationsOutputPort {
@@ -14,5 +14,11 @@ public interface PersistenceOperationsOutputPort {
 
     RoomType obtainRoomType(RoomTypeId roomTypeId);
 
-    Set<Room> findAvailableRooms(RoomType roomType, LocalDate registrationStartDate, LocalDate registrationEndDate);
+    Set<Room> obtainAllRooms();
+
+    Room obtainRoom(RoomNumber roomNumber);
+
+    void save(Room room);
+
+    void save(Registration registration);
 }

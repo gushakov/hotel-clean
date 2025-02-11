@@ -19,4 +19,8 @@ public class Bed {
         this.size = Validator.notNull(size);
         this.manufacturer = Validator.notBlank(manufacturer);
     }
+
+    public int occupancy() {
+        return size.persons;
+    }
 }

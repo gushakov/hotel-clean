@@ -10,7 +10,12 @@ import java.util.Set;
 
 public interface CheckInGuestPresenterOutputPort extends ErrorHandlingPresenterOutputPort {
 
-    void presentErrorIfNoAvailableRoomsMatchingRoomTypeAtCheckIn(Registration registration, RoomType roomType);
+    void presentErrorIfNoAvailableRoomsMatchingRoomTypeDuringCheckIn(Registration registration, RoomType roomType);
 
-    void presentAvailableRoomsForAssignment(RegistrationId registrationId, Set<Room> availableRooms);
+    void presentAvailableMatchingRoomsForAssignment(RegistrationId registrationId, Set<Room> availableRooms);
+
+    void presentErrorOnRoomTypeMismatchDuringAssignment(Registration registration, RoomType roomType,
+                                                        Room room);
+
+    void presentResultOfSuccessfulRoomAssignment(Registration registrationWithRoomAssigned);
 }
