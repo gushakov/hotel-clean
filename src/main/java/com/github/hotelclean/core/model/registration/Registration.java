@@ -64,10 +64,23 @@ public class Registration {
 
         // will be "null" before check-in and after check-out
         this.assignedRoomNumber = assignedRoomNumber;
+
+        checkInvariants();
     }
 
+    /**
+     * Assigns a room with the given {@code roomNumber} to this registration.
+     *
+     * @param roomNumber room number
+     * @return a copy of this registration with room number assigned
+     */
+    public Registration assignRoom(RoomNumber roomNumber) {
+        return newRegistration()
+                .assignedRoomNumber(assignedRoomNumber)
+                .build();
+    }
 
-    private Registration.RegistrationBuilder newRegistration() {
+    private RegistrationBuilder newRegistration() {
         return Registration.builder()
                 .id(id)
                 .guestName(guestName)
@@ -75,6 +88,15 @@ public class Registration {
                 .startDate(startDate)
                 .endDate(endDate)
                 .assignedRoomNumber(assignedRoomNumber);
+
+    }
+
+    private void checkInvariants() {
+
+        // check dates for the registration
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalRegistrationDatesError("Start date cannot be after end date");
+        }
 
     }
 }

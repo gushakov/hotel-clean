@@ -14,7 +14,6 @@ import java.util.Collection;
  * Aggregate root. Describes a type or a category of rooms available
  * at the hotel.
  */
-
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -31,9 +30,7 @@ public class RoomType {
     String name;
 
     /**
-     * Collection of bedding types available for this room type. This
-     * is a simple collection since we may have duplicates: i.e. two
-     * queen beds.
+     * Collection of bedding types available for this room type.
      */
     Collection<BeddingType> beddingTypes;
 
@@ -58,7 +55,6 @@ public class RoomType {
      * balcony, etc.
      */
     String amenities;
-
 
     @Builder
     public RoomType(RoomTypeId id, String name, Collection<BeddingType> beddingTypes, Occupancy occupancy,

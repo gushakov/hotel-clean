@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Aggregate root. Model of a hotel room.
@@ -26,22 +26,37 @@ public class Room {
     RoomNumber roomNumber;
 
     /**
-     * Beds this room is furnished with. This a simple collection,
-     * since we can have duplicates: i.e.: two double beds, etc.
+     * Beds this room is furnished with.
      */
     Collection<Bed> beds;
 
     /**
-     * Indicates whether this room is available for guests.
+     * Indicates whether this room is available for guests, i.e,
+     * not reserved for maintenance.
      */
     boolean availableForGuests;
 
+    /**
+     * Indicates whether this room is occupied (by a guest or by
+     * a staff member).
+     */
+    boolean occupied;
+
     @Builder
-    public Room(RoomNumber roomNumber, Set<Bed> beds, Boolean availableForGuests) {
+    public Room(RoomNumber roomNumber, Collection<Bed> beds, Boolean availableForGuests, Boolean occupied) {
         this.roomNumber = Validator.notNull(roomNumber);
+        this.beds = List.copyOf(Validator.notEmpty(beds));
         // room is available by default
         this.availableForGuests = Optional.ofNullable(availableForGuests).orElse(true);
-        this.beds = Validator.notEmpty(beds);
+        // room is not occupied by default
+        this.occupied = Optional.ofNullable(occupied).orElse(false);
+    }
 
+    private RoomBuilder newRoom() {
+        return Room.builder()
+                .roomNumber(roomNumber)
+                .beds(beds)
+                .availableForGuests(availableForGuests)
+                .occupied(occupied);
     }
 }
