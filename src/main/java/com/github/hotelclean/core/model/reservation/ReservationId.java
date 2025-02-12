@@ -1,4 +1,4 @@
-package com.github.hotelclean.core.model.registration;
+package com.github.hotelclean.core.model.reservation;
 
 
 import com.github.hotelclean.core.Validator;
@@ -8,17 +8,17 @@ import lombok.Getter;
 import lombok.Value;
 
 @Value
-public class RegistrationId {
+public class ReservationId {
 
     @Getter(AccessLevel.NONE)
     String id;
 
-    public static RegistrationId of(final String id) {
-        return new RegistrationId(id);
+    public static ReservationId of(final String id) {
+        return new ReservationId(id);
     }
 
     @Builder
-    public RegistrationId(String id) {
+    public ReservationId(String id) {
         this.id = Validator.notBlank(id);
     }
 

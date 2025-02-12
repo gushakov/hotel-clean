@@ -24,7 +24,7 @@ public class RoomTypeId {
         this.id = Validator.notBlank(id);
     }
 
-    public String asString(){
+    public String asString() {
         return id;
     }
 }

@@ -3,8 +3,8 @@ package com.github.hotelclean.core.usecase.checkin;
 import com.github.hotelclean.core.model.DefaultRoomTypeMatchingSpecification;
 import com.github.hotelclean.core.model.RoomTypeMatchingSpecification;
 import com.github.hotelclean.core.model.accommodation.RoomType;
-import com.github.hotelclean.core.model.registration.Registration;
-import com.github.hotelclean.core.model.registration.RegistrationId;
+import com.github.hotelclean.core.model.reservation.Reservation;
+import com.github.hotelclean.core.model.reservation.ReservationId;
 import com.github.hotelclean.core.model.room.Room;
 import com.github.hotelclean.core.model.room.RoomNumber;
 import com.github.hotelclean.core.port.persistence.PersistenceOperationsOutputPort;
@@ -35,21 +35,21 @@ public class CheckInGuestUseCase implements CheckInGuestInputPort {
      */
 
     @Override
-    public void receptionistBrowsesAvailableRoomsMatchingRoomTypeFromRegistration(String registrationIdArg) {
+    public void receptionistBrowsesAvailableRoomsMatchingRoomTypeFromReservation(String reservationIdArg) {
 
         try {
 
             // assert the current user is a receptionist
             securityOps.assertUserIsReceptionist();
 
-            // validate registration ID
-            RegistrationId registrationId = RegistrationId.of(registrationIdArg);
+            // validate reservation ID
+            ReservationId reservationId = ReservationId.of(reservationIdArg);
 
-            // load registration
-            Registration registration = persistenceOps.obtainRegistration(registrationId);
+            // load reservation
+            Reservation reservation = persistenceOps.obtainReservation(reservationId);
 
-            // load room type of the registration
-            RoomType roomType = persistenceOps.obtainRoomType(registration.getRoomTypeId());
+            // load room type of the reservation
+            RoomType roomType = persistenceOps.obtainRoomType(reservation.getRoomTypeId());
 
             // instantiate room matching strategy
             RoomTypeMatchingSpecification roomTypeMatchingSpecification = new DefaultRoomTypeMatchingSpecification(roomType);
@@ -76,12 +76,12 @@ public class CheckInGuestUseCase implements CheckInGuestInputPort {
                     of overbooking. The receptionist will have to deal with this
                     case by possibly proposing a room of similar type.
                  */
-                presenter.presentErrorIfNoAvailableRoomsMatchingRoomTypeDuringCheckIn(registration, roomType);
+                presenter.presentErrorIfNoAvailableRoomsMatchingRoomTypeDuringCheckIn(reservation, roomType);
                 return;
             }
 
             // present available rooms for the receptionist to choose from
-            presenter.presentAvailableMatchingRoomsForAssignment(registrationId, availableMatchingRooms);
+            presenter.presentAvailableMatchingRoomsForAssignment(reservationId, availableMatchingRooms);
 
         } catch (Exception e) {
             presenter.presentError(e);
@@ -90,21 +90,21 @@ public class CheckInGuestUseCase implements CheckInGuestInputPort {
     }
 
     @Override
-    public void receptionistAssignsRoom(String registrationIdArg, int roomNumberArg) {
+    public void receptionistAssignsRoom(String reservationIdArg, int roomNumberArg) {
         try {
 
             // assert the current user is a receptionist
             securityOps.assertUserIsReceptionist();
 
-            // validate registration ID and room number
-            RegistrationId registrationId = RegistrationId.of(registrationIdArg);
+            // validate reservation ID and room number
+            ReservationId reservationId = ReservationId.of(reservationIdArg);
             RoomNumber roomNumber = RoomNumber.of(roomNumberArg);
 
-            // load registration
-            Registration registration = persistenceOps.obtainRegistration(registrationId);
+            // load reservation
+            Reservation reservation = persistenceOps.obtainReservation(reservationId);
 
-            // load room type of the registration
-            RoomType roomType = persistenceOps.obtainRoomType(registration.getRoomTypeId());
+            // load room type of the reservation
+            RoomType roomType = persistenceOps.obtainRoomType(reservation.getRoomTypeId());
 
             // load room
             Room room = persistenceOps.obtainRoom(roomNumber);
@@ -114,15 +114,15 @@ public class CheckInGuestUseCase implements CheckInGuestInputPort {
 
             // verify that room is (still) available and matches the room type
             if (!roomIsAvailableAndMatchesRoomType(roomTypeMatchingSpecification, room)) {
-                presenter.presentErrorOnRoomTypeMismatchDuringAssignment(registration, roomType,
+                presenter.presentErrorOnRoomTypeMismatchDuringAssignment(reservation, roomType,
                         room);
                 return;
             }
 
-            // mark the room as occupied and assign the room to the registration
+            // mark the room as occupied and assign the room to the reservation
 
             Room occupiedRoom = room.occupy();
-            Registration registrationWithRoomAssigned = registration.assignRoom(roomNumber);
+            Reservation reservationWithRoomAssigned = reservation.assignRoom(roomNumber);
 
             /*
                 POINT OF INTEREST
@@ -132,11 +132,11 @@ public class CheckInGuestUseCase implements CheckInGuestInputPort {
              */
             txOps.doInTransaction(false, () -> {
                 persistenceOps.save(occupiedRoom);
-                persistenceOps.save(registrationWithRoomAssigned);
+                persistenceOps.save(reservationWithRoomAssigned);
             });
 
             // present result of the use case upon a successful commit
-            txOps.doAfterCommit(() -> presenter.presentResultOfSuccessfulRoomAssignment(registrationWithRoomAssigned));
+            txOps.doAfterCommit(() -> presenter.presentResultOfSuccessfulRoomAssignment(reservationWithRoomAssigned));
 
         } catch (Exception e) {
             presenter.presentError(e);
