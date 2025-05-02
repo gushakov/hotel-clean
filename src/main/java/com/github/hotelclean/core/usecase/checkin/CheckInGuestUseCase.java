@@ -133,10 +133,14 @@ public class CheckInGuestUseCase implements CheckInGuestInputPort {
             txOps.doInTransaction(false, () -> {
                 persistenceOps.save(occupiedRoom);
                 persistenceOps.save(reservationWithRoomAssigned);
-            });
+                
+                // UPDATE, 02.06.2025: moved call to presenter to present
+                // successful result after commit inside this (transactional)
+                // callback.
 
-            // present result of the use case upon a successful commit
-            txOps.doAfterCommit(() -> presenter.presentResultOfSuccessfulRoomAssignment(reservationWithRoomAssigned));
+                // present result of the use case upon a successful commit
+                txOps.doAfterCommit(() -> presenter.presentResultOfSuccessfulRoomAssignment(reservationWithRoomAssigned));
+            });
 
         } catch (Exception e) {
             presenter.presentError(e);
