@@ -76,7 +76,7 @@ public class Reservation {
      */
     public Reservation assignRoom(RoomNumber roomNumber) {
         return newReservation()
-                .assignedRoomNumber(assignedRoomNumber)
+                .assignedRoomNumber(roomNumber)
                 .build();
     }
 
